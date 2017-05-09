@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import customTools.DbUser;
+import model.Bhuser;
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
@@ -32,6 +33,24 @@ public class LoginServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		
 		//did they click the logout link?
+		if (action.equals("logout")){
+			session.invalidate();
+			nextPage = "/login.jsp";
+			
+		}else{
+			Bhuser user = DbUser.getUserByEmail(email);
+			if (DbUser.isValidUser(user)){
+				session.setAttribute("user", user);
+				int size = 30;
+				String gravatarURL = DbUser.getGravatarURL(email, size);
+				System.out.println(gravatarURL);
+				session.setAttribute("gravatarURL", gravatarURL);
+				nextPage = "/home.jsp";
+			}else{
+				nextPage = "/login.jsp";
+			}
+			
+		}
 		//first... check that the action variable contains something
 		//then the code below will determine if they clicked logout and kill the session
 		//before sending the user back to the login page
