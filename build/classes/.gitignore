@@ -1,11 +1,13 @@
+/Feedback.class
 /Home.class
 /LoginServlet.class
 /META-INF/
+/NewsfeedServelet.class
+/Post.class
 /ProfileServlet.class
 /User.class
 /customTools/
 /model/
 /util/
-/Feedback.class
-/NewsfeedServelet.class
-/Post.class
+/Newsfeed.class
+/AddUserServelet.class

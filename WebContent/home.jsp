@@ -7,7 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
+<jsp:include page="bootstrap.jsp"></jsp:include>
 <jsp:include page="navbar.jsp"></jsp:include>
+
 <h1>this is the home page</h1>
 <h1>${message}</h1>
 <h1>Welcome, ${user.getUsername()}</h1>

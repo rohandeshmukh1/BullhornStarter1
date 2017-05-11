@@ -11,9 +11,10 @@
 <title>Profile</title>
 </head>
 <body>
+    <jsp:include page="bootstrap.jsp"></jsp:include>
 	<jsp:include page="navbar.jsp"></jsp:include>
 	<h1>this is the profile page</h1>
-
+ 
 	<c:if test="${editProfile==null}">
 		<h1>the session doesn't exist</h1>
 	</c:if>
@@ -36,28 +37,14 @@
 			</table>
 		</c:when>
 		<c:when test="${editProfile==true}">
-			<form action="UpdateUser" method="post">
-				<table border="1">
-					<tr>
-						<td>Name:</td>
-						<td><input type="text" name="username"
-							value="<c:out value="${username}"/>"></td>
-					</tr>
-					<tr>
-						<td>Email:</td>
-						<td><input type="text" name="useremail" 
-						    value="<c:out value="${useremail}"/>"></td>
-					</tr>
-					<tr>
-						<td>Motto:</td>
-						<td><input type="text" name="usermotto"
-						     value="<c:out value="${usermotto}"/>"></td>
-					</tr>
-				</table>
-				<input type="hidden" name="userid" value="${userid}">
-				<input type="hidden" name="action" value="updateProfile">
-				 <input	type="submit" value="update">
-			</form>
+			<form action="ProfileServlet" method="post">
+			<input type="hidden" name="action" value="updateprofile">
+			<input type="hidden" name="userid" value="${userid}">
+			<h2>Email: <input type="text" name="useremail" value="${useremail}"/></h2>
+			<h2>Motto: <input type="text" name="usermotto" value="${usermotto}"/></h2>
+			<h2>Join Date: <c:out value="${userjoindate}"/></h2>
+			<input type="submit" value="Save Changes"/>
+		</form>
 		</c:when>
 	</c:choose>
 

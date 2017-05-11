@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import customTools.DbUser;
 import model.Bhuser;
 
+@WebServlet("/ProfileServlet")
 public class ProfileServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -60,17 +61,20 @@ public class ProfileServlet extends HttpServlet {
 		//Anything that comes in from getParameter is a String so we need to 
 		//convert it to an integer. In Java the term for converting something is "cast"
 		//so we cast the incoming request parameter for userid to an int
-		int userid = Integer.parseInt(request.getParameter("userid"));
+	 
+		
 		String action = request.getParameter("action");
+		long userid = Long.parseLong(request.getParameter("userid"));
+	  
+	   
+		
 		/*
 		 * simplify this so that it always requires two parameters, userid and action
 		 * action is 'view' or 'edit'. If edit then the userID of the session(user) must be same as userID for profile
 		 * since you can only edit your own profile.
 		 * all urls coming to this page must contain both parameters (userid and action) or get an error.
 		 */			
-		User loggedInUser = (User) session.getAttribute("user");//<-- here we are casting to a User object
-		Bhuser profileUser = DbUser.getUser(userid);//<-- we don't have to cast this time because we have a userId and the DbUser class knows what to do with a userId
-
+		
 		
 		//REVIEW: What do we know at this point....
 		/* ONE: The logged in user came from the session. 
@@ -84,18 +88,24 @@ public class ProfileServlet extends HttpServlet {
 
 
 		//update profile in database for user in request variable if action = updateprofile
-		if (action.equals("updateProfile")){
+		if (request.getParameter("action").equals("updateprofile")){
+			long uid = Long.parseLong(request.getParameter("userid"));
 			String userEmail = request.getParameter("useremail");
 			String userMotto = request.getParameter("usermotto");
-			profileUser.setMotto(userMotto);
-			profileUser.setUseremail(userEmail);
-			DbUser.update(profileUser);
+			Bhuser updateUser = DbUser.getUser(uid);
+			updateUser.setMotto(userMotto);
+			updateUser.setUseremail(userEmail);
+			DbUser.update(updateUser);
+			
 		}
 		///////////////////////////////////////////////////////////////////////////////
+ 
+		Bhuser loggedInUser = (Bhuser) session.getAttribute("user");//<-- here we are casting to a User object
+		Bhuser profileUser = DbUser.getUser(userid);//<-- we don't have to cast this time because we have a userId and the DbUser class knows what to do with a userId
 
 		//if the loggedInUser is requesting their own profile
 		//then show profile.jsp in edit mode (ie... values in textboxes and a submit button)
-		if (loggedInUser.getUserId()==profileUser.getBhuserid()){
+		if (loggedInUser.getBhuserid()==profileUser.getBhuserid()){
 			//display profile as form
 			//the session variable editProfile is used by the JSP to
 			//display the profile in edit mode
@@ -104,6 +114,7 @@ public class ProfileServlet extends HttpServlet {
 			request.setAttribute("username", profileUser.getUsername());
 			request.setAttribute("useremail", profileUser.getUseremail());
 			request.setAttribute("usermotto", profileUser.getMotto());
+			request.setAttribute("userjoindate", profileUser.getJoindate());
 		}else{
 			//display profile read-only
 			//the session variable editProfile is used by the JSP to
@@ -113,6 +124,7 @@ public class ProfileServlet extends HttpServlet {
 			request.setAttribute("username", profileUser.getUsername());
 			request.setAttribute("useremail", profileUser.getUseremail());
 			request.setAttribute("usermotto", profileUser.getMotto());
+			request.setAttribute("userjoindate", profileUser.getJoindate());
 		}
 
 		//in any event we need to populate the data on profile.jsp
@@ -121,6 +133,6 @@ public class ProfileServlet extends HttpServlet {
 
 		nextURL = "/profile.jsp";
 		//redirect to next page as indicated by the value of the nextURL variable
-
+		getServletContext().getRequestDispatcher(nextURL).forward(request, response);
 	}
 }

@@ -1,33 +1,35 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="en_US" /><!-- fixes date not displaying correctly in Eclipse browser -->
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>BullHorn</title>
+<jsp:include page="bootstrap.jsp"></jsp:include>
 </head>
 <body>
 <jsp:include page="navbar.jsp"></jsp:include>
-<h1>this is the newsfeed page</h1>
-<!-- 
-I've hard coded three posts here to show you what this might look like. 
-The newsfeed servlet would be called to query the database and populate the
-posts into an arraylist which would be displayed in this JSP
--->
-<table>
-<!-- each html table row starts with tr, each cell starts with td -->
-<tr>
-<td><a href="ProfileServlet?userid=1&action=viewProfile">user1@domain.com</a></td>
-<td>This is the text of user1's tweet</td>
-</tr>
-<tr>
-<td><a href="ProfileServlet?userid=2&action=viewProfile">user2@domain.com</a></td>
-<td>This is the text of user2 tweet</td>
-</tr>
-<tr>
-<td><a href="ProfileServlet?userid=3&action=viewProfile">user3@domain.com</a></td>
-<td>This is the text of user3 tweet</td>
-</tr>
-</table>
+<h1>This is the newsfeed page</h1>
+<div class="container">
+<table class="table table-bordered">
+    <thead>
+        <tr><th>User</th><th>Post</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+    <c:forEach var="post" items="${posts}">
+        <tr><td><a href="ProfileServlet?action=viewprofile&userid=<c:out value="${post.bhuser.bhuserid}"/>"><c:out value="${post.bhuser.useremail}"/></a></td>
+        <td><c:out value="${post.posttext}"/></td>
+        <td><fmt:formatDate value="${post.postdate}" pattern="yy-MMM-dd"/></td>
+        </tr>
+    </c:forEach>
+    </tbody>
+    </table>
+
+</div>
+
+
 </body>
 </html>

@@ -31,16 +31,34 @@ public class LoginServlet extends HttpServlet {
 		String nextPage = "/error.jsp";//someplace to go if things don't work
 		String message = "";
 		HttpSession session = request.getSession();
-		
+	
 		//did they click the logout link?
 		if (action.equals("logout")){
 			session.invalidate();
 			nextPage = "/login.jsp";
 			
-		}else{
+		}else if (action.equals("create")){
+			response.getWriter().append(action);
+			nextPage = "/adduser.jsp";
+			getServletContext().getRequestDispatcher(nextPage).forward(request, response);
+			
+			//
+			/* Bhuser newuser = new Bhuser(); 
+			newuser.setUserpassword(request.getParameter("password"));
+			newuser.setMotto(request.getParameter("motto"));
+			newuser.setUseremail(request.getParameter("email"));
+			newuser.setUsername(request.getParameter("username"));
+			DbUser.insert(newuser);*/
+		}
+		
+		else{
 			Bhuser user = DbUser.getUserByEmail(email);
 			if (DbUser.isValidUser(user)){
 				session.setAttribute("user", user);
+				System.out.println(user.getBhuserid());
+				System.out.println(user.getUseremail());
+				System.out.println(user.getMotto());
+				System.out.println(user.getUsername());
 				int size = 30;
 				String gravatarURL = DbUser.getGravatarURL(email, size);
 				System.out.println(gravatarURL);
@@ -50,7 +68,7 @@ public class LoginServlet extends HttpServlet {
 				nextPage = "/login.jsp";
 			}
 			
-		}
+	
 		//first... check that the action variable contains something
 		//then the code below will determine if they clicked logout and kill the session
 		//before sending the user back to the login page
@@ -76,8 +94,9 @@ public class LoginServlet extends HttpServlet {
 		}
 
 		//Your work here is done. Redirect to next page as indicated by the value of the nextURL variable
-		response.sendRedirect(request.getContextPath() + nextPage);
-	
+		//response.sendRedirect(request.getContextPath() + nextPage);
+		
+		getServletContext().getRequestDispatcher(nextPage).forward(request, response);
+	 }
 	}
-
 }
